@@ -20,8 +20,11 @@ func TemplateFile(tpl_file string) {
 	}
 
 	output = string(fbuffer)
-	output = parseblocks(output, "")
 
+	blocks = make(map[string]string)
+	assignments = make(map[string]string)
+
+	output = parseblocks(output, "")
 }
 
 
@@ -35,6 +38,7 @@ func Parse(block_name string) {
 	for name, value := range assignments {
 		output = strings.Replace(output, "{"+name+"}", value, -1)
 	}
+	assignments = make(map[string]string)
 }
 
 func Out()  string {
