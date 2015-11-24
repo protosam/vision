@@ -12,7 +12,7 @@ var blocks = make(map[string]string)
 var assignments = make(map[string]string)
 
 func TemplateFile(tpl_file string) {
-	fbuffer, err := ioutil.ReadFile("tpl/hello.tpl")
+	fbuffer, err := ioutil.ReadFile(tpl_file)
 
 	if err != nil {
 		fmt.Println(err)
