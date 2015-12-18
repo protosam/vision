@@ -7,11 +7,14 @@ import (
 	"strings"
 )
 
-var output string
-var blocks = make(map[string]string)
-var assignments = make(map[string]string)
+type New struct {
+	output string
+	blocks map[string]string
+	Assignments map[string]string
+}
 
-func TemplateFile(tpl_file string) {
+func (tpl *Vision) TemplateFile(tpl_file string) {
+
 	fbuffer, err := ioutil.ReadFile(tpl_file)
 
 	if err != nil {
@@ -19,37 +22,38 @@ func TemplateFile(tpl_file string) {
 		return
 	}
 
-	output = string(fbuffer)
+	tpl.output = string(fbuffer)
 
-	blocks = make(map[string]string)
-	assignments = make(map[string]string)
+	tpl.blocks = make(map[string]string)
+	tpl.Assignments = make(map[string]string)
 
-	output = parseblocks(output, "")
+	tpl.output = tpl.parseblocks(tpl.output, "")
+
 }
 
 
-func Assign(name string, value string) {
-	assignments[name] = value
+func (tpl *Vision) Assign(name string, value string) {
+	tpl.Assignments[name] = value
 }
 
 
-func Parse(block_name string) {
-	output = strings.Replace(output, "<!-- BLOCK: " + block_name + " -->", blocks[block_name] + "<!-- BLOCK: " + block_name + " -->", 1)
-	for name, value := range assignments {
-		output = strings.Replace(output, "{"+name+"}", value, -1)
+func (tpl *Vision) Parse(block_name string) {
+	tpl.output = strings.Replace(tpl.output, "<!-- BLOCK: " + block_name + " -->", tpl.blocks[block_name] + "<!-- BLOCK: " + block_name + " -->", 1)
+	for name, value := range tpl.Assignments {
+		tpl.output = strings.Replace(tpl.output, "{"+name+"}", value, -1)
 	}
-	assignments = make(map[string]string)
+	tpl.Assignments = make(map[string]string)
 }
 
-func Out()  string {
+func (tpl *Vision) Out()  string {
 	block_pattern := regexp.MustCompile("<!-- BLOCK: (.*?) -->")
-	output = block_pattern.ReplaceAllString(output, "")
+	tpl.output = block_pattern.ReplaceAllString(tpl.output, "")
 	blanklines := regexp.MustCompile("(?ms:(^([[:space:]]+)?[\r\n]|^[\r\n]+))")
-	output = blanklines.ReplaceAllString(output, "")
-	return output
+	tpl.output = blanklines.ReplaceAllString(tpl.output, "")
+	return tpl.output
 }
 
-func parseblocks(htmlin string, parent_blockname string) string {
+func (tpl *Vision) parseblocks(htmlin string, parent_blockname string) string {
 	begin_pattern := regexp.MustCompile("<!-- BEGIN: (.*?) -->")
 	raw_block_name := begin_pattern.FindStringSubmatch(htmlin)
 
@@ -65,13 +69,13 @@ func parseblocks(htmlin string, parent_blockname string) string {
 			}
 			block_content := raw_block_content[1]
 
-			blocks[block_name] = parseblocks(block_content, block_name)
+			tpl.blocks[block_name] = tpl.parseblocks(block_content, block_name)
 			htmlin = strings.Replace(htmlin, raw_block_content[0], "<!-- BLOCK: " + block_name + " -->", -1)
 
 			//fmt.Println("Wrote " + block_name)
 		}
 
-		htmlin = parseblocks(htmlin, parent_blockname)
+		htmlin = tpl.parseblocks(htmlin, parent_blockname)
 	}
 
 
