@@ -7,26 +7,26 @@ import (
 
 func main() {
 
-
-	vision.TemplateFile("tpl/hello.tpl")
+	var tpl vision.New
+	tpl.TemplateFile("tpl/hello.tpl")
 	
-	vision.Assign("testvar", "Foobar")
+	tpl.Assign("testvar", "Foobar")
 	
-	vision.Parse("main")
-	vision.Parse("main/row")
-	vision.Parse("main/row")
-	vision.Parse("main/row")
-	
-	
-	
-	vision.Assign("foovar", "Hello World")
-	vision.Parse("main/vrow")
-	vision.Assign("foovar", "Hello Dog")
-	vision.Parse("main/vrow")
-	vision.Assign("foovar", "Hello Cat")
-	vision.Parse("main/vrow")
+	tpl.Parse("main")
+	tpl.Parse("main/row")
+	tpl.Parse("main/row")
+	tpl.Parse("main/row")
 	
 	
 	
-	fmt.Println(vision.Out())
+	tpl.Assign("foovar", "Hello World")
+	tpl.Parse("main/vrow")
+	tpl.Assign("foovar", "Hello Dog")
+	tpl.Parse("main/vrow")
+	tpl.Assign("foovar", "Hello Cat")
+	tpl.Parse("main/vrow")
+	
+	
+	
+	fmt.Println(tpl.Out())
 }
