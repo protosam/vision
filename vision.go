@@ -13,7 +13,7 @@ type New struct {
 	Assignments map[string]string
 }
 
-func (tpl *Vision) TemplateFile(tpl_file string) {
+func (tpl *New) TemplateFile(tpl_file string) {
 
 	fbuffer, err := ioutil.ReadFile(tpl_file)
 
@@ -32,12 +32,12 @@ func (tpl *Vision) TemplateFile(tpl_file string) {
 }
 
 
-func (tpl *Vision) Assign(name string, value string) {
+func (tpl *New) Assign(name string, value string) {
 	tpl.Assignments[name] = value
 }
 
 
-func (tpl *Vision) Parse(block_name string) {
+func (tpl *New) Parse(block_name string) {
 	tpl.output = strings.Replace(tpl.output, "<!-- BLOCK: " + block_name + " -->", tpl.blocks[block_name] + "<!-- BLOCK: " + block_name + " -->", 1)
 	for name, value := range tpl.Assignments {
 		tpl.output = strings.Replace(tpl.output, "{"+name+"}", value, -1)
@@ -45,7 +45,7 @@ func (tpl *Vision) Parse(block_name string) {
 	tpl.Assignments = make(map[string]string)
 }
 
-func (tpl *Vision) Out()  string {
+func (tpl *New) Out()  string {
 	block_pattern := regexp.MustCompile("<!-- BLOCK: (.*?) -->")
 	tpl.output = block_pattern.ReplaceAllString(tpl.output, "")
 	blanklines := regexp.MustCompile("(?ms:(^([[:space:]]+)?[\r\n]|^[\r\n]+))")
@@ -53,7 +53,7 @@ func (tpl *Vision) Out()  string {
 	return tpl.output
 }
 
-func (tpl *Vision) parseblocks(htmlin string, parent_blockname string) string {
+func (tpl *New) parseblocks(htmlin string, parent_blockname string) string {
 	begin_pattern := regexp.MustCompile("<!-- BEGIN: (.*?) -->")
 	raw_block_name := begin_pattern.FindStringSubmatch(htmlin)
 
