@@ -33,6 +33,8 @@ func (tpl *New) TemplateFile(tpl_file string) {
 
 
 func (tpl *New) Assign(name string, value string) {
+	// sanitize the value
+	value = strings.Replace(value, "}", "_SANITIZED}", -1)
 	tpl.Assignments[name] = value
 }
 
@@ -51,6 +53,7 @@ func (tpl *New) Out()  string {
 	//blanklines := regexp.MustCompile("(?ms:(^([[:space:]]+)?[\r\n]|^[\r\n]+))")
 	//tpl.output = blanklines.ReplaceAllString(tpl.output, "")
 	tpl.output = strings.TrimSpace(tpl.output)
+	tpl.output = strings.Replace(tpl.output, "_SANITIZED}", "}", -1)
 	return tpl.output
 }
 
