@@ -48,8 +48,9 @@ func (tpl *New) Parse(block_name string) {
 func (tpl *New) Out()  string {
 	block_pattern := regexp.MustCompile("<!-- BLOCK: (.*?) -->")
 	tpl.output = block_pattern.ReplaceAllString(tpl.output, "")
-	blanklines := regexp.MustCompile("(?ms:(^([[:space:]]+)?[\r\n]|^[\r\n]+))")
-	tpl.output = blanklines.ReplaceAllString(tpl.output, "")
+	//blanklines := regexp.MustCompile("(?ms:(^([[:space:]]+)?[\r\n]|^[\r\n]+))")
+	//tpl.output = blanklines.ReplaceAllString(tpl.output, "")
+	tpl.output = blanklines.strings.TrimSpace(tpl.output)
 	return tpl.output
 }
 
