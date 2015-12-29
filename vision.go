@@ -50,8 +50,9 @@ func (tpl *New) Parse(block_name string) {
 	// removed for problems
 	// tpl.output = strings.Replace(tpl.output, "<!-- BLOCK: " + block_name + " -->", tpl.blocks[block_name] + "<!-- BLOCK: " + block_name + " -->", 1)
 	
-	pos := old_string.rfind("<!-- BLOCK: " + block_name + " -->")
-	tpl.out = old_string[:pos] + ". - " + old_string[pos+1:]
+	pos := strings.LastIndex(tpl.output, "<!-- BLOCK: " + block_name + " -->")
+	tpl.output = tpl.output[:pos] + tpl.blocks[block_name] + tpl.output[pos:]
+
 	
 	for name, value := range tpl.GAssignments {
 		tpl.output = strings.Replace(tpl.output, "{"+name+"}", value, -1)
