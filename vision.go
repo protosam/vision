@@ -50,7 +50,14 @@ func (tpl *New) Parse(block_name string) {
 	// removed for problems
 	// tpl.output = strings.Replace(tpl.output, "<!-- BLOCK: " + block_name + " -->", tpl.blocks[block_name] + "<!-- BLOCK: " + block_name + " -->", 1)
 	
-	pos := strings.LastIndex(tpl.output, "<!-- BLOCK: " + block_name + " -->")
+	block_placeholder := "<!-- BLOCK: " + block_name + " -->";
+	pos := strings.LastIndex(tpl.output, block_placeholder)
+
+	if strings.Contains(tpl.output, block_placeholder) == false {
+		fmt.Println("visions: block parser: failed to parse block " + block_name);
+		return
+	}
+
 	tpl.output = tpl.output[:pos] + tpl.blocks[block_name] + tpl.output[pos:]
 
 	
@@ -78,8 +85,14 @@ func (tpl *New) parseblocks(htmlin string, parent_blockname string) string {
 	begin_pattern := regexp.MustCompile("<!-- BEGIN: (.*?) -->")
 	raw_block_name := begin_pattern.FindStringSubmatch(htmlin)
 
+
 	if raw_block_name != nil {
 		block_name := raw_block_name[1]
+
+		if strings.Contains(htmlin, "<!-- END: " + block_name + " -->") == false {
+			fmt.Println("visions: block build error: Failed to find ending to " + block_name);
+			return "visions: block build error: Failed to find ending to " + block_name;
+		}
 
 		block_pattern := regexp.MustCompile("<!-- BEGIN: " + block_name + " -->(?ms:(.*?))<!-- END: " + block_name + " -->")
 		raw_block_content := block_pattern.FindStringSubmatch(htmlin)
